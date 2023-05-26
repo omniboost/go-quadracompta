@@ -50,7 +50,7 @@ func (l *Line) UnmarshalFixedWidth(data []byte) error {
 	return errors.New(fmt.Sprintf("Unknown type: %s", string(r[0])))
 }
 
-func (l Line) MarshalFixedWidth(spec fixedwidth.FieldSpec) ([]byte, error) {
+func (l Line) MarshalFixedWidth() ([]byte, error) {
 	if l.TypeI != nil {
 		return fixedwidth.Marshal(l.TypeI)
 	}

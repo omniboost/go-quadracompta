@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"math"
 	"time"
-
-	"github.com/ianlopshire/go-fixedwidth"
 )
 
 type UpdateExistingAccountFlag int
@@ -16,7 +14,7 @@ type AccountType string
 
 type Amount float64
 
-func (a Amount) MarshalFixedWidth(spec fixedwidth.FieldSpec) ([]byte, error) {
+func (a Amount) MarshalFixedWidth() ([]byte, error) {
 	if a == 0.0 {
 		return []byte{}, nil
 	}
@@ -26,13 +24,9 @@ func (a Amount) MarshalFixedWidth(spec fixedwidth.FieldSpec) ([]byte, error) {
 		sign = "-"
 	}
 
-	length := spec.EndPos + 1 - spec.StartPos
-	if length < 2 {
-		length = 13
-	}
-
 	i := int(math.RoundToEven(float64(a) * 100))
 
+	length := 13
 	f := fmt.Sprintf("%%0+%dv", length-1)
 	s := sign + fmt.Sprintf(f, i)
 	return []byte(s), nil
@@ -45,7 +39,7 @@ func (f *Flag) UnmarshalFixedWidth(data []byte) error {
 	return nil
 }
 
-func (f Flag) MarshalFixedWidth(spec fixedwidth.FieldSpec) ([]byte, error) {
+func (f Flag) MarshalFixedWidth() ([]byte, error) {
 	if f == true {
 		return []byte("1"), nil
 	} else {
@@ -74,7 +68,7 @@ func (d *Date) UnmarshalFixedWidth(data []byte) error {
 	return nil
 }
 
-func (d Date) MarshalFixedWidth(spec fixedwidth.FieldSpec) ([]byte, error) {
+func (d Date) MarshalFixedWidth() ([]byte, error) {
 	if d.Time.IsZero() {
 		return []byte{}, nil
 	}
